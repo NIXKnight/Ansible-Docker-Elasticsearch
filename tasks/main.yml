@@ -1,2 +1,78 @@
 ---
 # tasks file for Ansible-Docker-Elasticsearch
+- name: Check if Elasticsearch Container is Running
+  docker_container_info:
+    name: "{{ DOCKER_ELASTICSEARCH_CONTAINER_NAME }}"
+  register: elasticsearch_container
+  tags:
+    - "install"
+    - "update"
+
+- name: Check if Elasticsearch Docker Volume Exists
+  docker_volume_info:
+    name: "{{ DOCKER_ELASTICSEARCH_VOLUME_NAME }}"
+  register: elasticsearch_volume
+  tags:
+    - "install"
+
+- name: Stop and Remove Elasticsearch Container
+  docker_container:
+    name: "{{ DOCKER_ELASTICSEARCH_CONTAINER_NAME }}"
+    state: "absent"
+  when: elasticsearch_container.exists
+  tags:
+    - "install"
+    - "update"
+
+- name: Remove Elasticsearch Image
+  docker_image:
+    name: "{{ DOCKER_ELASTICSEARCH_IMAGE }}"
+    state: absent
+  when: elasticsearch_container.exists
+  tags:
+    - "install"
+    - "update"
+
+- name: Create Elasticsearch Docker Volume
+  docker_volume:
+    name: "{{ DOCKER_ELASTICSEARCH_VOLUME_NAME }}"
+  when: not elasticsearch_volume.exists
+  tags:
+    - "install"
+
+- name: Pull Elasticsearch Version {{ DOCKER_ELASTICSEARCH_IMAGE }} Docker Image
+  docker_image:
+    name: "{{ DOCKER_ELASTICSEARCH_IMAGE }}"
+    source: pull
+  tags:
+    - "install"
+    - "update"
+
+- name: Start Elasticsearch Docker Container with Ports Exposed
+  docker_container:
+    name: "{{ DOCKER_ELASTICSEARCH_CONTAINER_NAME }}"
+    hostname: "{{ DOCKER_ELASTICSEARCH_CONTAINER_NAME }}"
+    image: "{{ DOCKER_ELASTICSEARCH_IMAGE }}"
+    state: started
+    restart_policy: unless-stopped
+    ports: "{{ DOCKER_ELASTICSEARCH_PORT_MAPPING }}"
+    volumes: "{{ DOCKER_ELASTICSEARCH_VOLUME_MAPPING }}"
+    env: "{{ DOCKER_ELASTICSEARCH_ENVIRONMENT }}"
+  when: DOCKER_ELASTICSEARCH_EXPOSE_PORTS
+  tags:
+    - "install"
+    - "update"
+
+- name: Start Elasticsearch Docker Container
+  docker_container:
+    name: "{{ DOCKER_ELASTICSEARCH_CONTAINER_NAME }}"
+    hostname: "{{ DOCKER_ELASTICSEARCH_CONTAINER_NAME }}"
+    image: "{{ DOCKER_ELASTICSEARCH_IMAGE }}"
+    state: started
+    restart_policy: unless-stopped
+    volumes: "{{ DOCKER_ELASTICSEARCH_VOLUME_MAPPING }}"
+    env: "{{ DOCKER_ELASTICSEARCH_ENVIRONMENT }}"
+  when: not DOCKER_ELASTICSEARCH_EXPOSE_PORTS
+  tags:
+    - "install"
+    - "update"

@@ -1,2 +1,3 @@
 ---
 # vars file for Ansible-Docker-Elasticsearch
+docker_elasticsearch_data_volume: "/usr/share/elasticsearch/data"
