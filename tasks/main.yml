@@ -54,7 +54,7 @@
     hostname: "{{ DOCKER_ELASTICSEARCH_CONTAINER_NAME }}"
     image: "{{ DOCKER_ELASTICSEARCH_IMAGE }}"
     state: started
-    restart_policy: unless-stopped
+    restart_policy: "{{ DOCKER_ELASTICSEARCH_RESTART_POLICY }}"
     ports: "{{ DOCKER_ELASTICSEARCH_PORT_MAPPING }}"
     volumes: "{{ DOCKER_ELASTICSEARCH_VOLUME_MAPPING }}"
     env: "{{ DOCKER_ELASTICSEARCH_ENVIRONMENT }}"
@@ -69,7 +69,7 @@
     hostname: "{{ DOCKER_ELASTICSEARCH_CONTAINER_NAME }}"
     image: "{{ DOCKER_ELASTICSEARCH_IMAGE }}"
     state: started
-    restart_policy: unless-stopped
+    restart_policy: "{{ DOCKER_ELASTICSEARCH_RESTART_POLICY }}"
     volumes: "{{ DOCKER_ELASTICSEARCH_VOLUME_MAPPING }}"
     env: "{{ DOCKER_ELASTICSEARCH_ENVIRONMENT }}"
   when: not DOCKER_ELASTICSEARCH_EXPOSE_PORTS
