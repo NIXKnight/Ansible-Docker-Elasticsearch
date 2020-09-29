@@ -58,6 +58,7 @@
     ports: "{{ DOCKER_ELASTICSEARCH_PORT_MAPPING }}"
     volumes: "{{ DOCKER_ELASTICSEARCH_VOLUME_MAPPING }}"
     env: "{{ DOCKER_ELASTICSEARCH_ENVIRONMENT }}"
+    network_mode: "{{ DOCKER_ELASTICSEARCH_NETWORK_NAME }}"
   when: DOCKER_ELASTICSEARCH_EXPOSE_PORTS
   tags:
     - "install"
@@ -72,6 +73,7 @@
     restart_policy: "{{ DOCKER_ELASTICSEARCH_RESTART_POLICY }}"
     volumes: "{{ DOCKER_ELASTICSEARCH_VOLUME_MAPPING }}"
     env: "{{ DOCKER_ELASTICSEARCH_ENVIRONMENT }}"
+    network_mode: "{{ DOCKER_ELASTICSEARCH_NETWORK_NAME }}"
   when: not DOCKER_ELASTICSEARCH_EXPOSE_PORTS
   tags:
     - "install"
